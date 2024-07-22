@@ -1,0 +1,168 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<string.h>
+
+#define MAX 2
+
+struct library{
+    char name[20];
+    char author[20];
+    int year;
+    char ISBN[15];
+}book[MAX];
+
+typedef struct library library;
+
+void createFile(){
+    FILE *fp = fopen("library.txt", "w");
+
+    system("cls");
+    printf("Please enter all 5 books.\n");
+    for (int i=0; i<MAX; i++){
+        printf("\nBook %d\n", i+1);
+        fprintf(fp, "\nBook %d\n", i+1);
+
+        printf("Title: ");
+        scanf(" %19[^\n]", book[i].name);
+        fprintf(fp, "Title: %s\n", book[i].name);
+
+        printf("Author: ");
+        scanf(" %19[^\n]", book[i].author);
+        fprintf(fp, "Author: %s\n", book[i].author);
+
+        printf("Year: ");
+        scanf("%d", &book[i].year);
+        fprintf(fp, "Year: %d\n", book[i].year);
+        while(getchar() != '\n');
+
+        printf("ISBN: ");
+        scanf(" %14[^\n]", book[i].ISBN);
+        fprintf(fp, "ISBN: %s\n", book[i].ISBN);
+        while(getchar() != '\n');
+    }
+
+    fclose(fp);
+    printf("\n\nPress any key to continue...");
+    getch();
+}
+
+void modifyBook(){
+    FILE *fp = fopen("library.txt", "w");        
+    system("cls");
+
+    printf("Enter ISBN of the book you wish to modify: ");
+    char bookTemp[15];
+    scanf(" %14[^\n]", bookTemp);
+    while(getchar()!='\n');
+
+    for (int i=0; i<MAX; i++){
+        if (stricmp(bookTemp, book[i].ISBN) == 0){
+            printf("\nEnter modified book details\n");
+            printf("Title: ");
+            scanf(" %19[^\n]", book[i].name);
+
+            printf("Author: ");
+            scanf(" %19[^\n]", book[i].author);
+
+            printf("Year: ");
+            scanf("%d", &book[i].year);
+            while(getchar() != '\n');
+            
+            printf("ISBN: ");
+            scanf(" %14[^\n]", book[i].ISBN);
+            while(getchar() != '\n');
+            printf("\nBook modified.");
+        }
+    }
+
+    for (int i=0; i<MAX; i++){
+        fprintf(fp, "\nBook %d\n", i+1);
+        fprintf(fp, "Title: %s\n", book[i].name);
+        fprintf(fp, "Author: %s\n", book[i].author);
+        fprintf(fp, "Year: %d\n", book[i].year);
+        fprintf(fp, "ISBN: %s\n", book[i].ISBN);
+    }
+
+    fclose(fp);
+    printf("\n\nPress any key to continue...");
+    getch();
+}
+
+void displayBook(){
+    FILE *fp = fopen("library.txt", "r");
+    system("cls");
+
+    char line[100];
+    while(fgets(line, sizeof(line), fp)){
+        printf("%s", line);
+    }
+
+    fclose(fp);
+    printf("\n\nPress any key to continue...");
+    getch();
+}
+
+void sortBook(){
+    system("cls");
+    library temp;
+    for (int i=0; i<MAX-1; i++){
+        for (int j=0; j<MAX-i-1; j++){
+            if (book[j].year > book[j+1].year){
+                temp = book[j];
+                book[j] = book[j+1];
+                book[j+1] = temp;
+            }
+        }
+    }
+
+    printf("Sorted Books\n");
+    for(int i = 0; i < MAX; i++){
+        printf("Book %d\n", i+1);
+        printf("Title: %s\n", book[i].name);
+        printf("Author: %s\n", book[i].author);
+        printf("Year: %d\n", book[i].year);
+        printf("ISBN: %s\n\n", book[i].ISBN);
+    }
+
+    printf("\n\nPress any key to continue...");
+    getch();
+}
+
+
+int main(){
+    int choice;
+    do {
+        system("cls");
+        printf("Library Management System\n");
+        printf("1. Create file and add books\n");
+        printf("2. Modify book\n");
+        printf("3. Display books\n");
+        printf("4. Sort books\n");
+        printf("5. Exit program\n");
+        printf(">> ");
+        scanf("%d", &choice);
+
+        switch(choice){
+            case 1:
+                createFile();
+                break;
+            case 2:
+                modifyBook();
+                break;
+            case 3:
+                displayBook();
+                break;
+            case 4:
+                sortBook();
+                break;
+            case 5:
+                break;
+            default:
+                printf("Invalid input");
+                printf("\n\nPress any key to continue...");
+                getch();
+        }
+    }while (choice != 5);
+    printf("Program terminated.");
+}
